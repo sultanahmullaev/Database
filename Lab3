@@ -1,0 +1,110 @@
+--1)
+a.
+SELECT * FROM course WHERE credits > 3;
+b.
+SELECT * FROM classroom WHERE building = 'Watson' OR building = 'Packard';
+c.
+SELECT * FROM course WHERE dept_name = 'Comp. Sci.';
+d.
+SELECT course_id, title
+FROM course
+WHERE course_id IN
+(SELECT course_id
+FROM section
+WHERE semester = 'Fall');
+e.
+SELECT * FROM student WHERE 45 < tot_cred AND tot_cred < 90;
+f.
+SELECT * FROM student
+WHERE name LIKE '%a'
+OR name LIKE '%e'
+OR name LIKE '%y'
+OR name LIKE '%u'
+OR name LIKE '%i'
+OR name LIKE '%o';
+d.
+SELECT course_id, title
+FROM course
+WHERE course_id IN
+(SELECT p.course_id
+FROM prereq p
+WHERE prereq_id = 'CS-101');
+
+
+
+
+--2)
+a.
+SELECT i.dept_name, ROUND(AVG(i.salary)) avg_salary
+FROM instructor AS i
+GROUP BY i.dept_name
+ORDER BY ROUND(AVG(i.salary));
+b.
+SELECT s.building
+FROM section AS s
+GROUP BY s.building
+ORDER BY COUNT(*) DESC
+LIMIT 1;
+c.
+WITH f AS
+(SELECT dept_name, COUNT(*) AS num_of_courses
+FROM course
+GROUP BY dept_name)
+SELECT *
+FROM f
+WHERE num_of_courses = (SELECT MIN(num_of_courses) FROM f);
+d.
+WITH f AS
+    (SELECT id, COUNT(*) num
+    FROM takes
+    WHERE course_id LIKE 'CS%'
+    GROUP BY id)
+SELECT name, id
+FROM student
+WHERE id IN
+(SELECT id
+FROM f
+WHERE num > 3);
+e.
+SELECT *
+FROM instructor
+WHERE dept_name = 'Biology'
+OR dept_name = 'Philosophy'
+OR dept_name = 'Music';
+f.
+SELECT id
+FROM teaches
+WHERE year = 2018 EXCEPT
+SELECT id
+FROM teaches
+WHERE year = 2017;
+
+
+
+
+--3)
+a.
+WITH f AS
+    (SELECT id
+    FROM takes
+    WHERE (grade = 'A' OR grade = 'A-') AND course_id LIKE 'CS%'
+    GROUP BY id)
+SELECT id, name
+FROM student
+WHERE id IN
+(SELECT id FROM f)
+ORDER BY name ASC;
+b.
+WITH f AS
+    (SELECT id
+    FROM takes t
+    WHERE grade = 'B-'
+    OR grade = 'C+'
+    OR grade = 'C'
+    OR grade = 'C-'
+    OR grade = 'F')
+SELECT i_id
+FROM advisor
+WHERE s_id IN
+(SELECT id FROM f)
+GROUP BY i_id
