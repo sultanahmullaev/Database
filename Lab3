@@ -22,7 +22,7 @@ OR name LIKE '%y'
 OR name LIKE '%u'
 OR name LIKE '%i'
 OR name LIKE '%o';
-d.
+g.
 SELECT course_id, title
 FROM course
 WHERE course_id IN
