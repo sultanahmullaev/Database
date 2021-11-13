@@ -1,0 +1,44 @@
+--1
+-- We can store large objects as either blob or clob
+-- Blob (binary large object) is a large collection of uninterpreted binary data
+-- Clob (character large object) is a large collection of character data
+-- query for a large object returns a pointer to this object
+
+
+--2
+create role accountant;
+create role administrator;
+create role support;
+
+grant all privileges on customers, accounts, transactions to administrator with grant option;
+grant select on accounts to accountant;
+grant select on customers, transactions to support;
+
+create user Erasyl;
+create user Tom;
+create user Nur;
+
+grant administrator to Erasyl;
+grant accountant to Tom;
+grant support to Nur;
+
+revoke select on accounts from Tom;
+
+
+--3
+alter table customers
+alter column name set not null,
+alter column birth_date set not null;
+
+alter table accounts
+alter column currency set not null,
+alter column balance set not null;
+
+alter table transactions
+alter column date set not null,
+alter column amount set not null,
+alter column status set not null;
+
+
+--5
+create unique index acc_curr on accounts (account_id, customer_id, currency);
